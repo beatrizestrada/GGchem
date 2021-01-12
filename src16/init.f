@@ -27,9 +27,9 @@
       character(len=200) :: line
       logical :: found
 
-      write(*,*) 
-      write(*,*) "elemental abundances and masses ..."
-      write(*,*) "==================================="
+c      write(*,*) 
+c      write(*,*) "elemental abundances and masses ..."
+c      write(*,*) "==================================="
       elnam(1)  = 'H '
       elnam(2)  = 'He'
       elnam(3)  = 'Li'
@@ -223,15 +223,15 @@
 *     ***  read abundances from file?  ***      
 *     ------------------------------------
       if (abund_pick.eq.0) then
-        write(*,*)
-        write(*,*) "read element abundances from "//
-     &             trim(abund_file)//" ..."
+c        write(*,*)
+c        write(*,*) "read element abundances from "//
+c     &             trim(abund_file)//" ..."
         open(1,file=abund_file,status='old')
         eps   = -40.0
         mfrac = 1.Q-50
         do i=1,999
           read(1,*,err=1000,end=1000) el,val
-          print*,el,val
+c          print*,el,val
           if (el=='el') cycle
           found = .false.
           do j=1,NELEM
@@ -244,7 +244,7 @@
             endif  
           enddo  
           if (.not.found) then
-            write(*,*) "*** element "//el//" not found." 
+c            write(*,*) "*** element "//el//" not found." 
             stop
           endif  
         enddo  
@@ -253,16 +253,16 @@
           call mf2eps(mfrac,eps)
           do i=1,NELEM
             if (mfrac(i)==1.Q-50) cycle
-            write(*,'(A2,": ",1pE10.3," ->",2(1pE10.3))') 
-     &           elnam(i),eps0(i),eps(i),mfrac(i)
+c            write(*,'(A2,": ",1pE10.3," ->",2(1pE10.3))') 
+c     &           elnam(i),eps0(i),eps(i),mfrac(i)
           enddo
         else   
           epsH = eps(H)
           do i=1,NELEM
             eps(i) = 10.Q0 ** (eps(i)-epsH)
             if (initchem_info) then
-              write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
-     &             elnam(i),eps0(i),eps(i)
+c              write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
+c     &             elnam(i),eps0(i),eps(i)
             endif
           enddo        
           call eps2mf(eps,mfrac)
@@ -272,9 +272,9 @@
         !eps(O) = eps(O)+1*addH2O
       else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
-        write(*,*)
-        write(*,*) "replacing from file Abundances.dat ("
-     &             //trim(source(abund_pick))//") ..."
+c        write(*,*)
+c        write(*,*) "replacing from file Abundances.dat ("
+c     &             //trim(source(abund_pick))//") ..."
         open(1,file='data/Abundances.dat',status='old')
         do i=1,5
           read(1,'(A200)') line
@@ -298,19 +298,19 @@
 
       call eps2mf(eps,mfrac)
       muH = 0.d0
-      write(*,'(7x,A8,A8,A12,A13,A12)')
-     &      "mass","eps","n/nH","log10(n/nSi)","mfrac" 
+c      write(*,'(7x,A8,A8,A12,A13,A12)')
+c     &      "mass","eps","n/nH","log10(n/nSi)","mfrac" 
       do i=1,NELEM
         if (index(elements," "//trim(elnam(i))//" ")>0) then 
-          write(*,'(1x,I2,1x,a2,1x,0pF8.3,0pF8.3,1pE12.3,
-     &              0pF13.3,1pE12.3)') 
-     &          i,elnam(i),mass(i)/amu,12.d0+LOG10(eps(i)),eps(i),
-     &          LOG10(eps(i)/eps(Si)),mfrac(i)
+c          write(*,'(1x,I2,1x,a2,1x,0pF8.3,0pF8.3,1pE12.3,
+c     &              0pF13.3,1pE12.3)') 
+c     &          i,elnam(i),mass(i)/amu,12.d0+LOG10(eps(i)),eps(i),
+c     &          LOG10(eps(i)/eps(Si)),mfrac(i)
           muH = muH + mass(i)*eps(i)
         endif  
       enddo
-      write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
-      write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)
+c      write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
+c      write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)
 
       RETURN
       end

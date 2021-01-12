@@ -41,7 +41,7 @@
       else
         filename = 'structures/'//trim(struc_file)
       endif  
-      print*,"reading "//trim(filename)//" ..."
+c     print*,"reading "//trim(filename)//" ..."
 
       !--------------------------------------------------------
       if (model_struc==1) then

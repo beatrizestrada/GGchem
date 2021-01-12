@@ -26,6 +26,9 @@
       character(len=1) :: char
       integer :: verbose=0
       logical :: isOK,hasW,same,no_solution,TEAinterface=.false.
+c     variable declaration for writing of partial pressures
+      real*8 :: n_atom_total, n_mole_total, n_total, pp_electron,
+     >  pp_atoms, pp_molecules, pp_non, pp_sum
 
       !----------------------------
       ! ***  open output files  ***
@@ -434,6 +437,49 @@
 
       write(*,*)
       if (TEAinterface) write(*,frmt) trim(species)
+      
+      open(unit=707, file='pp.dat', status='replace')
+c     first calculate the total number density
+c     calculate the contribution of elements:
+      n_atom_total = 0.0
+      do i=1, el-1
+        n_atom_total = n_atom_total + nat(elnum(i))
+      enddo
+c     calculate the contribution of molecules and ions:
+      n_mole_total = 0.0
+      do i=1, NMOLE
+        n_mole_total = n_mole_total + nmol(i)
+      enddo
+c     calculate total number density (include number density of
+c     electrons! - already defined)
+      n_total = nel + n_atom_total + n_mole_total
+
+c     to obtain a partial pressure one multiplies the ratio of the
+c     element or molecule number density to the total number density
+c     by the total gas pressure
+c     write partial pressure of elements:
+      write(707,'(1p8e12.3)')(nat(elnum(i)) * pgas/n_total,i=1,el-1)
+      write(707,*)
+c     write partial pressure of molecules:
+      write(707,'(1p8e12.3)')(nmol(i) * pgas/n_total,i=1,NMOLE)
+c     write element number and corresponding name:
+      write(707,'(i4,a20)')( (elnum(i),elnam(elnum(i))), i=1,el-1)
+      write(707,*)
+c     write molecule name:
+      write(707,714) (cmol(i),i=1,NMOLE)
+714   format(10a8)
+      close(707)
+
+      pp_electron = (nel/n_total) * pgas
+      pp_atoms = (n_atom_total/n_total) * pgas
+      pp_molecules = (n_mole_total/n_total) * pgas
+      pp_non = 0.0
+      pp_sum = pp_electron+pp_atoms+pp_molecules
+      open(unit=990,file='GGchem_ppel',status='replace')
+      write(990,*) Tg,pgas,pp_electron,mu/amu,rhog,rhod,pp_molecules,
+     >  pp_molecules,pp_non,pp_atoms,pp_non,pp_molecules,pp_sum
+      close(990)
+
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
  1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))

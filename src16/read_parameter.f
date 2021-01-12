@@ -62,7 +62,7 @@
       !-------------------------------------------
       iarg = iargc()
       if (iarg==0) then
-        print*,"using default parameters"
+c        print*,"using default parameters"
         return
       endif  
       call getarg(1,ParamFile)
@@ -74,7 +74,7 @@
         if (line(1:1).eq.'#') cycle           ! ignore comment lines
         if (len(trim(line))==0) cycle         ! ignore comment lines
         iline = iline+1
-        print*,trim(line)
+c        print*,trim(line)
         if (iline.eq.1) then
           elements = ' '//trim(line)//' '     ! selection of elements
         else if (index(line,"! abund_pick")>0) then   
@@ -170,8 +170,8 @@
           i = index(line,"!")
           read(line(1:i-1),*) DustChem_file
         else
-          print*,"*** syntax error in "//trim(ParamFile)//":"
-          print*,trim(line)
+c          print*,"*** syntax error in "//trim(ParamFile)//":"
+c          print*,trim(line)
           stop
         endif  
       enddo  

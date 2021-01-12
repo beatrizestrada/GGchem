@@ -19,14 +19,14 @@
       character(len=2)  :: name
       logical :: found,allfound,hasH,hasSi,hasAl,hasCa
 
-      write(*,*) 
-      write(*,*) "reading "//trim(DustChem_file)//" ..."
-      write(*,*) "========================"
-      trivial(:)=' '
+c      write(*,*) 
+c      write(*,*) "reading "//trim(DustChem_file)//" ..."
+c      write(*,*) "========================"
+c      trivial(:)=' '
 
       open(12, file='data/'//trim(DustChem_file), status='old')
  
-      write(*,*) '--- dust species ---'
+c      write(*,*) '--- dust species ---'
       read(12,1000) zeile
       read(12,1000) zeile
       read(12,*) imax
@@ -67,8 +67,8 @@
             endif
           enddo
           if (.not.found) then
-            print*,trim(dust_nam(NDUST)),name
-            print*,elnam(1:NELEM)
+c            print*,trim(dust_nam(NDUST)),name
+c            print*,elnam(1:NELEM)
             stop 'Element in dust species not found'
           endif  
           found = .false.
@@ -108,14 +108,14 @@
           found = .true.
         enddo
         if (.not.found) then
-          print*,"*** syntax error in DustChem.dat, condensate=",
-     &         dust_nam(NDUST)
+c          print*,"*** syntax error in DustChem.dat, condensate=",
+c     &         dust_nam(NDUST)
           stop
         endif  
         j1 = index(allcond," "//trim(dust_nam(NDUST)))
         if (j1>0) then
-          print*,"*** double condensate in DustChem.dat"
-          print*,dust_nam(NDUST)
+c          print*,"*** double condensate in DustChem.dat"
+c          print*,dust_nam(NDUST)
           stop
         endif  
         if ((.not.phyllosilicates).and.hasH
@@ -123,17 +123,17 @@
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)
-          write(*,1060) NDUST,dust_nam(NDUST),dust_rho(NDUST),
-     &                  dust_vol(NDUST), (dust_nu(NDUST,j),
-     &                  elnam(dust_el(NDUST,j)),j=1,dust_nel(NDUST))
-          allcond = " "//trim(allcond)//" "//trim(dust_nam(NDUST))
+c          write(*,1060) NDUST,dust_nam(NDUST),dust_rho(NDUST),
+c     &                  dust_vol(NDUST), (dust_nu(NDUST,j),
+c     &                  elnam(dust_el(NDUST,j)),j=1,dust_nel(NDUST))
+c          allcond = " "//trim(allcond)//" "//trim(dust_nam(NDUST))
           NDUST = NDUST+1
         endif
       enddo
       NDUST=NDUST-1
-      write(*,*) NDUST," condensed species"
-      write(*,*)
-      write(*,*) '--- involved elements ---'
+c      write(*,*) NDUST," condensed species"
+c      write(*,*)
+c      write(*,*) '--- involved elements ---'
       NEPS=0
       elcode(:)=0
       do i=1,NDUST
@@ -153,7 +153,7 @@
             NEPS = NEPS+1 
             elnr(NEPS) = el
             elcode(el) = NEPS
-            write(*,*) elcode(elnr(NEPS)),' ',name,el
+c            write(*,*) elcode(elnr(NEPS)),' ',name,el
           endif
         enddo
       enddo

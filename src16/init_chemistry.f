@@ -81,7 +81,7 @@
           stop "*** unknown element "
         endif
         if (initchem_info) then
-          print*,'element '//elnam,elnum(NELM)
+c         print*,'element '//elnam,elnum(NELM)
         endif
       enddo
 
@@ -96,8 +96,8 @@
         if (filename=='') exit
         filename = 'data/'//trim(filename)
         if (initchem_info) write(*,*)
-        write(*,*) 'reading kp-data from '
-     &             //trim(filename)//" ..."
+c        write(*,*) 'reading kp-data from '
+c     &             //trim(filename)//" ..."
         open(unit=12, file=filename, status='old')
         read(12,*) NMOLdim
         do ii=1,NMOLdim
@@ -164,16 +164,16 @@
             if (initchem_info) then
               write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
      &           ret,trim(cmol(ret)),(m_anz(j,ret),cel(j),j=1,iel)
-              print*,trim(line)//"    OVERWRITE"
+c              print*,trim(line)//"    OVERWRITE"
             endif  
           else  
             if (initchem_info) then
               write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
      &            i,trim(cmol(i)),(m_anz(j,i),catm(m_kind(j,i)),j=1,iel)
               if (loop==1) then
-                print*,trim(line)
+c                print*,trim(line)
               else
-                print*,trim(line)//"    --> NEW" 
+c                print*,trim(line)//"    --> NEW" 
               endif
             endif  
             if (iel==2.and.
@@ -195,9 +195,9 @@
       if (i_nasa==1) call NASA_POLYNOMIAL !Added by Yui Kawashima
 
       if (loop>1.and.initchem_info) then
-        print* 
+c        print* 
         do i=1,NMOLE
-          print*,i,cmol(i),' ->  '//trim(dispol_file(source(i)))
+c          print*,i,cmol(i),' ->  '//trim(dispol_file(source(i)))
         enddo
       endif  
   
@@ -231,15 +231,15 @@
       enddo  
       Ncmax = MAXVAL(STOImax)   ! maximum stoichiometric factor
 
-      print* 
-      print*,NMOLE,' species'
-      print*,NELM,' elements'
-      print'(99(A4))',(trim(catm(j)),j=1,NELM)
-      print'(99(I4))',elnum(1:NELM)
-      print'(99(I4))',STOImax(1:NELM)
+c      print* 
+c      print*,NMOLE,' species'
+c      print*,NELM,' elements'
+c      print'(99(A4))',(trim(catm(j)),j=1,NELM)
+c      print'(99(I4))',elnum(1:NELM)
+c      print'(99(I4))',STOImax(1:NELM)
       if (charge) then
-        print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
-     >                     (trim(cmol(elion(j))),j=el+1,NELM)
+c        print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
+c     >                     (trim(cmol(elion(j))),j=el+1,NELM)
       endif  
       
  3000 format(I4," & ",A12," & (",I1,") & ",I1," & ",
@@ -286,13 +286,13 @@
         eqname = (trim(molname)==trim(cmol(i)))
         eqsource = (loop==source(i))
         if (eqname.and.eqsource) then
-          print*,"*** double molecule in "//dispol_file(loop)
-          print*,trim(molname)//", "//trim(cmol(i))
+c          print*,"*** double molecule in "//dispol_file(loop)
+c          print*,trim(molname)//", "//trim(cmol(i))
           stop
         else if ((.not.eqname).and.eqsource.and.loop==1) then
           if (initchem_info) then
-            print*,trim(molname)//", "//trim(cmol(i))//
-     &           " different isomere in first source is OK"
+c            print*,trim(molname)//", "//trim(cmol(i))//
+c     &           " different isomere in first source is OK"
           endif
           return  
         else if (eqname.and.(.not.eqsource)) then  
@@ -305,25 +305,25 @@
       if (ambi>0) then
         if (source(ambi)==loop) then 
           if (initchem_info) then
-            print*,trim(molname)//", "//trim(cmol(ambi))//
-     &           " different isomere in subsequent source is OK"
+c            print*,trim(molname)//", "//trim(cmol(ambi))//
+c     &           " different isomere in subsequent source is OK"
           endif  
           ret = 0
           return
         else if (trim(dispol_file(loop))=="dispol_BURCAT.dat") then
-          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
-     &         " ambiguous names in ..."
-          print*,trim(dispol_file(loop))//
-     &         ", "//trim(dispol_file(source(ambi)))
-          print*,"will overwrite ..."
+c          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
+c     &         " ambiguous names in ..."
+c          print*,trim(dispol_file(loop))//
+c     &         ", "//trim(dispol_file(source(ambi)))
+c          print*,"will overwrite ..."
           ret = ambi
           !read(*,'(A1)') char1
         else  
-          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
-     &         " ambiguous names in ..."
-          print*,trim(dispol_file(loop))//
-     &         ", "//trim(dispol_file(source(ambi)))
-          print*,"please equalise in both data files."
+c          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
+c     &         " ambiguous names in ..."
+c          print*,trim(dispol_file(loop))//
+c     &         ", "//trim(dispol_file(source(ambi)))
+c          print*,"please equalise in both data files."
           stop 
         endif  
       endif  

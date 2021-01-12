@@ -31,27 +31,26 @@
       else if (model_dim==2) then  
         call DEMO_PHASEDIAGRAM
       else
-        print*,'*** model_dim=',model_dim,' ???'
+c        print*,'*** model_dim=',model_dim,' ???'
         stop
       endif   
       
-      print*
-      print'("            smchem calls = ",I8)',chemcall
-      print'("         iterations/call = ",0pF8.2)',
-     >                     REAL(chemiter)/REAL(chemcall)
-      print'("     pre-iterations/call = ",0pF9.3)',
-     >                      REAL(preIter)/REAL(chemcall)
-      print'("usage of saved estimates = ",0pF9.3," %")',
-     >                       REAL(preUse)/REAL(preEst)*100.0
-      print'("   dual corrections/call = ",0pF9.3)',
-     >                     REAL(DUALcorr)/REAL(chemcall)
-      print'("  H-C-O corrections/call = ",0pF9.3)',
-     >                      REAL(HCOcorr)/REAL(chemcall)
+c      print'("            smchem calls = ",I8)',chemcall
+c      print'("         iterations/call = ",0pF8.2)',
+c     >                     REAL(chemiter)/REAL(chemcall)
+c      print'("     pre-iterations/call = ",0pF9.3)',
+c     >                      REAL(preIter)/REAL(chemcall)
+c      print'("usage of saved estimates = ",0pF9.3," %")',
+c     >                       REAL(preUse)/REAL(preEst)*100.0
+c      print'("   dual corrections/call = ",0pF9.3)',
+c     >                     REAL(DUALcorr)/REAL(chemcall)
+c      print'("  H-C-O corrections/call = ",0pF9.3)',
+c     >                      REAL(HCOcorr)/REAL(chemcall)
       if (model_eqcond) then
-        print'("   eq condensation calls = ",I8)',ieqcond
-        print'("      eq iterations/call = ",0pF8.2)',
-     >                   REAL(ieqconditer)/REAL(ieqcond)
-        print'("         transform calls = ",I8)',itransform
+c        print'("   eq condensation calls = ",I8)',ieqcond
+c        print'("      eq iterations/call = ",0pF8.2)',
+c     >                   REAL(ieqconditer)/REAL(ieqcond)
+c        print'("         transform calls = ",I8)',itransform
         NLAST=0         ! also save replaced database entries
         if (useDatabase) call SAVE_DBASE
       endif
@@ -87,6 +86,10 @@
       character(len=10) :: sp
       character(len=20) :: limcond
       integer :: iseq
+
+c     variable declaration for writing of partial pressures
+      real*8 :: n_atom_total, n_mole_total, n_total, pp_electron,
+     >  pp_atoms, pp_molecules, pp_non, pp_sum
       
       nHges = nHmax
       Tseq(Nseq) = Tmax
@@ -131,18 +134,18 @@
             endif  
           endif
           fold = ff
-          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+c          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
           if (ABS(dmu/mu)<1.E-10) exit
         enddo  
       enddo
 
       print*
-      write(*,*) '----- total nuclei dens. and fractions in gas -----'
+c      write(*,*) '----- total nuclei dens. and fractions in gas -----'
       do e=1,NELM
         if (e==el) cycle
         i = elnum(e) 
-        write(*,'(" n<",A2,">=",1pE10.4,2x,1pE10.4)')
-     >      elnam(i),nHges*eps(i),eps(i)/eps0(i)
+c        write(*,'(" n<",A2,">=",1pE10.4,2x,1pE10.4)')
+c     >      elnam(i),nHges*eps(i),eps(i)/eps0(i)
       enddo  
 
       ngas = nel      ! cm-3
@@ -171,25 +174,25 @@
       mgas  = mcond/d2g             ! mass of gas [g]
       Vgas  = mgas/mugas*bk*Tg/pgas ! volume of gas [cm3]
 
-      print*
-      write(*,*) '----- bulk properties -----'
-      print'("for Tg[K]=",0pF8.2," and n<H>[cm-3]=",1pE10.3)',Tg,nHges
-      print'(16x,3(A12))',"condensates","gas","check"
-      print'("         mass[g]",2(1pE12.4))',mcond,mgas
-      print'("  density[g/cm3]",2(1pE12.4))',rhoc,rhog
-      print'("tot.dens.[g/cm3]",12x,2(1pE12.4))',nHges*muH,
-     >                                   (mcond+mgas)/Vgas
-      print'("     volume[cm3]",2(1pE12.4))',Vcond,Vgas
-      print'("   pressure[bar]",12x,1pE12.4)',pgas/bar
-      print'("  el.press.[bar]",12x,1pE12.4)',nel*bk*Tg/bar
-      print'(" mol.weight[amu]",12x,1pE12.4)', mugas/amu
-      print'("         mu[amu]",12x,2(1pE12.4))', mu/amu,
-     >                (mcond+mgas)/Vgas/pgas*(bk*Tg)/amu
-      print'("        muH[amu]",12x,2(1pE12.4))',muH/amu,
-     >                     (mcond+mgas)/(nHges*Vgas)/amu
+c      print*
+c      write(*,*) '----- bulk properties -----'
+c      print'("for Tg[K]=",0pF8.2," and n<H>[cm-3]=",1pE10.3)',Tg,nHges
+c      print'(16x,3(A12))',"condensates","gas","check"
+c      print'("         mass[g]",2(1pE12.4))',mcond,mgas
+c      print'("  density[g/cm3]",2(1pE12.4))',rhoc,rhog
+c      print'("tot.dens.[g/cm3]",12x,2(1pE12.4))',nHges*muH,
+c     >                                   (mcond+mgas)/Vgas
+c      print'("     volume[cm3]",2(1pE12.4))',Vcond,Vgas
+c      print'("   pressure[bar]",12x,1pE12.4)',pgas/bar
+c      print'("  el.press.[bar]",12x,1pE12.4)',nel*bk*Tg/bar
+c      print'(" mol.weight[amu]",12x,1pE12.4)', mugas/amu
+c      print'("         mu[amu]",12x,2(1pE12.4))', mu/amu,
+c     >                (mcond+mgas)/Vgas/pgas*(bk*Tg)/amu
+c      print'("        muH[amu]",12x,2(1pE12.4))',muH/amu,
+c     >                     (mcond+mgas)/(nHges*Vgas)/amu
       
-      print*
-      write(*,*) '----- condensates [cm3] [mfrac] [Vfrac] -----'
+c      print*
+c      write(*,*) '----- condensates [cm3] [mfrac] [Vfrac] -----'
       raus = .false.
       do 
         iraus = 0
@@ -203,24 +206,23 @@
         enddo
         if (iraus==0) exit
         raus(iraus) = .true.
-        write(*,1020) ' n'//trim(dust_nam(iraus))//'=',
-     >                eldust(iraus)*nHges,
-     >                eldust(iraus)*dust_mass(iraus)*nHges/rhod,
-     >                eldust(iraus)*dust_Vol(iraus)*nHges/Vcon
+c        write(*,1020) ' n'//trim(dust_nam(iraus))//'=',
+c     >                eldust(iraus)*nHges,
+c     >                eldust(iraus)*dust_mass(iraus)*nHges/rhod,
+c     >                eldust(iraus)*dust_Vol(iraus)*nHges/Vcon
       enddo
       endif
       
-      print*
-      write(*,*) '----- atoms and ions [cm3] -----'
-      write(*,1000) ' nel=',nel
+c      write(*,*) '----- atoms and ions [cm3] -----'
+c      write(*,1000) ' nel=',nel
       do e=1,NELM
         if (e==el) cycle
         i = elnum(e) 
-        write(*,1010) ' n'//trim(elnam(i))//'I=',nat(i),
-     >               '  n'//trim(elnam(i))//'II=',nion(i)
+c        write(*,1010) ' n'//trim(elnam(i))//'I=',nat(i),
+c     >               '  n'//trim(elnam(i))//'II=',nion(i)
       enddo
   
-      write(*,*) '----- most abundant species [cm3] [molfrac] -----'
+c      write(*,*) '----- most abundant species [cm3] [molfrac] -----'
       raus   = .false.
       rausI  = .false.
       rausII = .false.
@@ -255,12 +257,12 @@
         if (.not.haeufig) exit
         if (iraus>0) then
           raus(iraus) = .true.
-          write(*,4010) cmol(iraus),nmol(iraus),
-     >                  nmol(iraus)/ngas,nmol(iraus)/ngas
+c          write(*,4010) cmol(iraus),nmol(iraus),
+c     >                  nmol(iraus)/ngas,nmol(iraus)/ngas
         else if (aIraus>0) then 
           rausI(aIraus) = .true.
-          write(*,4010) elnam(aIraus)//"I       ",nat(aIraus),
-     >                  nat(aIraus)/ngas,nat(aIraus)/ngas
+c          write(*,4010) elnam(aIraus)//"I       ",nat(aIraus),
+c     >                  nat(aIraus)/ngas,nat(aIraus)/ngas
         !else if (aIIraus>0) then 
         !  rausII(aIIraus) = .true.
         !  write(*,4010) elnam(aIIraus)//"II     ",nion(aIIraus),
@@ -268,39 +270,38 @@
         endif  
       enddo
       iraus = stindex(cmol,NMOLE,'H2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+c      if (.not.raus(iraus))
+c     >   write(*,4010) cmol(iraus),nmol(iraus),
+c     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
       iraus = stindex(cmol,NMOLE,'O2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+c      if (.not.raus(iraus))
+c     >   write(*,4010) cmol(iraus),nmol(iraus),
+c     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
       iraus = stindex(cmol,NMOLE,'CH4')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+c      if (.not.raus(iraus))
+c     >   write(*,4010) cmol(iraus),nmol(iraus),
+c     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
       iraus = stindex(cmol,NMOLE,'CO2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+c      if (.not.raus(iraus))
+c     >   write(*,4010) cmol(iraus),nmol(iraus),
+c     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
       iraus = stindex(cmol,NMOLE,'NH3')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+c      if (.not.raus(iraus))
+c     >   write(*,4010) cmol(iraus),nmol(iraus),
+c     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
           
-      print*
-      write(*,*) '-----  where are the elements?  -----'
+c      write(*,*) '-----  where are the elements?  -----'
       do e=1,NELM
         i = elnum(e)
         if (e==el) then
-          write(*,'("    Element ",A2,1pE15.3)') 'el',0.Q0
-          write(*,'(1x,A18,1pE10.3)') "nel",nel
+c          write(*,'("    Element ",A2,1pE15.3)') 'el',0.Q0
+c          write(*,'(1x,A18,1pE10.3)') "nel",nel
           threshold = 1.Q-3*nel
         else   
-          write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
+c          write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
           threshold = eps(i)*nHges*1.D-5
           if (nat(i).gt.threshold) then
-            write(*,'(1x,A18,1pE10.3)') "n"//trim(elnam(i)), nat(i) 
+c           write(*,'(1x,A18,1pE10.3)') "n"//trim(elnam(i)), nat(i) 
           endif  
         endif  
 
@@ -326,8 +327,8 @@
           if (iraus==0) exit
           haeufig = (nmax.gt.eps0(i)*1.D-2)
           if (.not.haeufig) exit
-          write(*,'(1x,A18,1pE10.3)') 
-     >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
+c          write(*,'(1x,A18,1pE10.3)') 
+c     >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
           raus(iraus) = .true.
         enddo  
 
@@ -350,7 +351,7 @@
           enddo  
           haeufig = (nmax.gt.threshold)
           if (.not.haeufig) exit
-          write(*,'(1x,A18,1pE10.3)') "n"//trim(cmol(iraus)),nmol(iraus)
+c          write(*,'(1x,A18,1pE10.3)') "n"//trim(cmol(iraus)),nmol(iraus)
           raus(iraus) = .true.
         enddo
       enddo  
@@ -358,25 +359,24 @@
 *     ------------------------------
       call SUPERSAT(Tg,nat,nmol,Sat)
 *     ------------------------------
-      print*
-      write(*,*) '----- supersaturation ratios -----'
+c      print*
+c      write(*,*) '----- supersaturation ratios -----'
       do i=1,NDUST
         if (Sat(i)<1.Q-2) cycle 
-        write(*,5000) dust_nam(i),Sat(i) 
+c        write(*,5000) dust_nam(i),Sat(i) 
       enddo
 
 *     ----------------------------------------------------
 *     ***  atmosphere types and low-temp expectations  ***
 *     ----------------------------------------------------
       if (.true.) then
-        print*
-        write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
-        write(*,'(" epsC=",2(1pE12.4),"   C/(H+O+C)=",1pE12.4)') 
-     >         eps0(C),eps(C),eps(C)/(eps(H)+eps(O)+eps(C))
-        write(*,'(" epsO=",2(1pE12.4)," (O-H)/(O+H)=",1pE12.4)') 
-     >     eps0(O),eps(O),(eps(O)-eps(H))/(eps(O)+eps(H))
-        write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
-        print*
+c        write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
+c       write(*,'(" epsC=",2(1pE12.4),"   C/(H+O+C)=",1pE12.4)') 
+c     >         eps0(C),eps(C),eps(C)/(eps(H)+eps(O)+eps(C))
+c        write(*,'(" epsO=",2(1pE12.4)," (O-H)/(O+H)=",1pE12.4)') 
+c     >     eps0(O),eps(O),(eps(O)-eps(H))/(eps(O)+eps(H))
+c        write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
+c        print*
         HH = eps(H)
         OO = eps(O)
         CC = eps(C)
@@ -395,48 +395,48 @@
         H2S = stindex(cmol,NMOLE,'H2S')
         if (HH>2*OO+4*CC) then
           if (3*NN<HH-2*OO-4*CC) then
-            print'("type A1")'
-            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
-     >                                     (2*OO)/(HH-NN-2*CC)
-            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
-     >                                     (2*CC)/(HH-NN-2*CC)
-            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
-     >                                     (2*NN)/(HH-NN-2*CC)
-            print'(" H2:",2(0pF8.4))',nmol(H2)/ngas,
-     >                        (HH-2*OO-4*CC-3*NN)/(HH-NN-2*CC)
+c            print'("type A1")'
+c            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+c     >                                     (2*OO)/(HH-NN-2*CC)
+c            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+c     >                                     (2*CC)/(HH-NN-2*CC)
+c            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
+c     >                                     (2*NN)/(HH-NN-2*CC)
+c            print'(" H2:",2(0pF8.4))',nmol(H2)/ngas,
+c     >                        (HH-2*OO-4*CC-3*NN)/(HH-NN-2*CC)
           else  
-            print'("type A2")'
-            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
-     >                                     (6*OO)/(HH+2*CC+3*NN+4*OO)
-            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
-     >                                     (6*CC)/(HH+2*CC+3*NN+4*OO)
-            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
-     >                           (2*HH-8*CC-4*OO)/(HH+2*CC+3*NN+4*OO)
-            print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
-     >                        (3*NN+4*CC+2*OO-HH)/(HH+2*CC+3*NN+4*OO)
+c            print'("type A2")'
+c            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+c     >                                     (6*OO)/(HH+2*CC+3*NN+4*OO)
+c            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+c     >                                     (6*CC)/(HH+2*CC+3*NN+4*OO)
+c            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
+c     >                           (2*HH-8*CC-4*OO)/(HH+2*CC+3*NN+4*OO)
+c            print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+c     >                        (3*NN+4*CC+2*OO-HH)/(HH+2*CC+3*NN+4*OO)
           endif
         else if (OO>0.5*HH+2*CC) then
-          print'("type B")'
-          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
-     >                                     (2*HH)/(HH+2*OO+2*NN)
-          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
-     >                                     (4*CC)/(HH+2*OO+2*NN)
-          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
-     >                                     (2*NN)/(HH+2*OO+2*NN)
-          print'(" O2:",2(0pF8.4))',nmol(O2)/ngas,
-     >                             (2*OO-HH-4*CC)/(HH+2*OO+2*NN)
+c          print'("type B")'
+c          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+c     >                                     (2*HH)/(HH+2*OO+2*NN)
+c          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
+c     >                                     (4*CC)/(HH+2*OO+2*NN)
+c          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+c     >                                     (2*NN)/(HH+2*OO+2*NN)
+c          print'(" O2:",2(0pF8.4))',nmol(O2)/ngas,
+c     >                             (2*OO-HH-4*CC)/(HH+2*OO+2*NN)
         else if (CC>0.25*HH+0.5*OO) then
-          print*,"forbidden by graphite condensation"
+c          print*,"forbidden by graphite condensation"
         else 
-          print'("type C")'
-          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
-     >                             (HH+2*OO-4*CC)/(HH+2*OO+2*NN)
-          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
-     >                           (OO+2*CC-0.5*HH)/(HH+2*OO+2*NN)
-          print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
-     >                           (0.5*HH-OO+2*CC)/(HH+2*OO+2*NN)
-          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
-     >                                     (2*NN)/(HH+2*OO+2*NN)
+c          print'("type C")'
+c          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+c     >                             (HH+2*OO-4*CC)/(HH+2*OO+2*NN)
+c          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
+c    >                           (OO+2*CC-0.5*HH)/(HH+2*OO+2*NN)
+c          print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+c     >                           (0.5*HH-OO+2*CC)/(HH+2*OO+2*NN)
+c          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+c     >                                     (2*NN)/(HH+2*OO+2*NN)
         endif
       endif
 
@@ -460,8 +460,7 @@
 *     ***  Calculation of the condenstation timescales  ***
 *     -----------------------------------------------------
       if (.false.) then
-      print*
-      print'("----- condensation timescales -----")'
+c      print'("----- condensation timescales -----")'
       yr  = 365.25*24.0*3600.0
       Myr = 1.E+6*yr
       mic = 1.E-4                ! one micrometer [cm]
@@ -477,7 +476,7 @@
       do i=1,NDUST
         !--- loop over present condensates ---
         if (eldust(i)<=0.0) cycle
-        write(*,*) 'n_'//trim(dust_nam(i))//' = ',eldust(i)*nHges
+c        write(*,*) 'n_'//trim(dust_nam(i))//' = ',eldust(i)*nHges
         !--- find least abundant element in the gas phase   ---
         !--- print stoichiometry and gas element abundances ---
         !--- nkey = min (eps(e )*nHges/s_e )  ---
@@ -518,22 +517,73 @@
         enddo
         vth = SQRT(8.0*bk*Tg/(pi*molmass))     ! [cm/s]
         tchem = 1.d0/(vth*alpha*AoverV*Vol)    ! [s]
-        write(*,'(" limiting element = ",A2)') elnam(keyel)
-        write(*,'(" mostly present as ",A10)') sp
-        write(*,'("        nmax,nkey = ",2(1pE11.4)," cm-3")')
-     >        nmax,nkey
-        write(*,'("             mass = ",2(1pE11.4)," amu")')
-     >        molmass/amu,mass(keyel)/amu
-        write(*,'("        timescale = ",1pE11.4," yr")')
-     >        tchem/yr
+c        write(*,'(" limiting element = ",A2)') elnam(keyel)
+c        write(*,'(" mostly present as ",A10)') sp
+c        write(*,'("        nmax,nkey = ",2(1pE11.4)," cm-3")')
+c     >        nmax,nkey
+c        write(*,'("             mass = ",2(1pE11.4)," amu")')
+c     >        molmass/amu,mass(keyel)/amu
+c        write(*,'("        timescale = ",1pE11.4," yr")')
+c     >        tchem/yr
         if (tchem>tchemtot) then
           tchemtot = tchem
           limcond  = dust_nam(i)
         endif
       enddo  
-      write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
-     >          1pE11.3)') limcond, tchemtot/yr
+c      write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
+c     >          1pE11.3)') limcond, tchemtot/yr
       endif
+      
+c     Modifications added to write a file with all partial
+c     pressures for each
+c     element and molecule. (28/10/20)
+
+c     file 707 is the one to be read by MARCS
+c     it contains partial pressures for a single atmosphere layer
+c     i.e. the one which marcs is iterating over atm
+      open(unit=707, file='pp.dat', status='replace')
+c     first calculate the total number density
+c     calculate the contribution of elements:
+      n_atom_total = 0.0
+      do i=1, el-1
+        n_atom_total = n_atom_total + nat(elnum(i))
+      enddo
+c     calculate the contribution of molecules and ions:
+      n_mole_total = 0.0
+      do i=1, NMOLE
+        n_mole_total = n_mole_total + nmol(i)
+      enddo
+c     calculate total number density (include number density of
+c     electrons! - already defined)
+      n_total = nel + n_atom_total + n_mole_total
+
+c     to obtain a partial pressure one multiplies the ratio of the
+c     element or molecule number density to the total number density
+c     by the total gas pressure
+c     write partial pressure of elements:
+      write(707,'(1p8e12.3)')(nat(elnum(i)) * pgas/n_total,i=1,el-1)
+      write(707,*)
+c     write partial pressure of molecules:
+      write(707,'(1p8e12.3)')(nmol(i) * pgas/n_total,i=1,NMOLE)
+c     write element number and corresponding name:
+      write(707,'(i4,a20)')( (elnum(i),elnam(elnum(i))), i=1,el-1)
+      write(707,*)
+c     write molecule name:
+      write(707,714) (cmol(i),i=1,NMOLE)
+714   format(10a8)
+      close(707)
+
+      pp_electron = (nel/n_total) * pgas
+      pp_atoms = (n_atom_total/n_total) * pgas
+      pp_molecules = (n_mole_total/n_total) * pgas
+      pp_non = 0.0
+      pp_sum = pp_electron+pp_atoms+pp_molecules
+      open(unit=990,file='GGchem_ppel',status='replace')
+      write(990,*) Tg,pgas,pp_electron,mu/amu,rhog,rhod,pp_molecules,
+     >  pp_molecules,pp_non,pp_atoms,pp_non,pp_molecules,pp_sum 
+      close(990)
+
+
       
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
